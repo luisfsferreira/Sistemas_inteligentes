@@ -126,6 +126,41 @@ class Dataset:
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
 
+#Exercício 2.1
+
+    def dropna (self):
+
+        identificar = np.all(~np.isnan(self.X), axis=1)  # np.isnan(self.X) Obtenho um boleano com os verdadeiros sendo iguais a NA mas o ~inverte a logica e agora quando é igual a NA, é falso. Na função toda, obtenho um boleano sendo os verdadeiros, as linhas que nao tem nenhum NA.
+        self.X = self.X[identificar]  #Nova matriz ondas as linhas de identificar são true. Removo as linhas falsas
+        self.y = self.y[identificar]    #Removo os rotulas das amostras que forem falsas.
+
+        return self
+
+#Exercício 2.2
+
+    def fillna (self, valor):
+        identificar = np.isnan(self.X)  #Boleano em que os valores de NA são considerados verdadeiros.
+
+        if valor == "mean":
+            média = np.nanmean(self.X, axis=0) #faz a média, ignorando os valores de NA
+            self.X = np.where(identificar, média, self.X)   # identificar é a matriz boleana em que os seus valores true são substituidos pela média. Self.X é a matriz original em que se o elemento for false, o valor vai se manter
+
+        elif valor == "median":
+            mediana = np.nanmedian(self.X, axis=0) #faz a mediana, ignorando os valores de NA
+            self.X = np.where(identificar, mediana, self.X)   # substitui os valores True pela mediana
+
+        else:
+            self.X[identificar] = valor
+
+        return self
+    
+#Exercício 2.3
+    
+    def remove_by_index (self, index):
+        self.X = np.delete(self.X, index, axis = 0)   #vai ser removida a linha correspondente ao index. Aqui o axis= 0 é a linha e axis = 1 é a coluna
+        self.y = np.delete(self.y, index)             #vai ser removido o rotulo correspondente a esta linha (amostra)
+        return self
+
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
         """
@@ -200,12 +235,22 @@ class Dataset:
 
 
 if __name__ == '__main__':
-    X = np.array([[1, 2, 3], [4, 5, 6]])
-    y = np.array([1, 2])
+    X = np.array([[1, 2, 3], [4,  np.nan, np.nan],[5, 10, 3]])
+    y = np.array([1, 2,3])
     features = np.array(['a', 'b', 'c'])
     label = 'y'
     dataset = Dataset(X, y, features, label)
-    print(dataset.shape())
+
+#Forma como os dados estão organizados
+
+ # a   |   b   |   c   |   y
+ #-----|-----|-----|-----
+ # 1   |   2   |   3   |   1
+ # 4   |   NA  |   NA  |   2    
+ # 5   |   10  |   3   |   3 
+
+    print(dataset.X.shape[0])
+    print()
     print(dataset.has_label())
     print(dataset.get_classes())
     print(dataset.get_mean())
@@ -214,3 +259,11 @@ if __name__ == '__main__':
     print(dataset.get_min())
     print(dataset.get_max())
     print(dataset.summary())
+    print()
+    # dataset.dropna()
+    # dataset.fillna(5)
+    print(dataset.remove_by_index(0))
+    print(dataset.X)
+    print(dataset.y)
+    
+   
