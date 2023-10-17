@@ -252,7 +252,7 @@ if __name__ == '__main__':
     print(dataset.X.shape[0])
     print()
     print(dataset.has_label())
-    print(dataset.get_classes())
+    print("Classe:", dataset.get_classes())
     print(dataset.get_mean())
     print(dataset.get_variance())
     print(dataset.get_median())
