@@ -90,7 +90,7 @@ class KMeans:
         Parameters
         ----------
         dataset: Dataset
-            Dataset object.
+            A labeled dataset
 
         Returns
         -------
@@ -153,7 +153,7 @@ class KMeans:
         Parameters
         ----------
         dataset: Dataset
-            Dataset object.
+            A labeled dataset
 
         Returns
         -------
