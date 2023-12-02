@@ -262,8 +262,9 @@ if __name__ == '__main__':
     print()
     # dataset.dropna()
     # dataset.fillna(5)
-    print(dataset.remove_by_index(0))
+    # print(dataset.remove_by_index(0))
     print(dataset.X)
-    print(dataset.y)
+    print(dataset.y)  #Obtemos as os rotulos das labels
+
     
    

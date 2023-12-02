@@ -6,7 +6,6 @@ from si.io.csv_file import read_csv
 from icecream import ic
 
 class SelectPercentile: 
-
     """
     Select features according to percentiles.
     Feature ranking is performed by computing the scores of each feature using a scoring function:
@@ -45,7 +44,6 @@ class SelectPercentile:
         self.p = None     
 
     def fit(self, dataset: Dataset) -> "SelectPercentile": 
-
         """
         It fits SelectPercentile to compute the F scores and p-values.
 
