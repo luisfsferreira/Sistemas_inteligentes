@@ -1,6 +1,6 @@
 import numpy as np
 from si.data.dataset import Dataset
-from si.data.metrics.mse import mse
+from si.metrics.mse import mse
 
 class RidgeRegressionLeastSquares:
     """
@@ -56,7 +56,7 @@ class RidgeRegressionLeastSquares:
         else: 
             X = dataset.X 
         
-        m, n = dataset.shape  # (linhas,colunas) & (amostras, carateristicas)
+        m, n = dataset.shape()  # (linhas,colunas) & (amostras, carateristicas)
 
         X = np.c_[np.ones(m), X]
 
@@ -86,10 +86,12 @@ class RidgeRegressionLeastSquares:
         else:
             X = dataset.X
 
-        m, n = dataset.shape  # (linhas,colunas) & (amostras, carateristicas)
+        m, n = X.shape  # (linhas,colunas) & (amostras, carateristicas)
         X = np.c_[np.ones(m), X]
     
-        Y_predict = X.dot(np.r_(self.theta_zero, self.theta))
+        Y_predict = X.dot(np.r_[self.theta_zero, self.theta])
+
+
 
         return Y_predict
     
@@ -103,7 +105,7 @@ class RidgeRegressionLeastSquares:
         Returns:
             - float: MSE value.
         """
-        Y_predict = self.predict[dataset]
+        Y_predict = self.predict(dataset)
         mse_score = mse(dataset.y, Y_predict)
 
         return mse_score

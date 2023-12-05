@@ -1,10 +1,12 @@
 from typing import Callable, Union
 from si.data.dataset import Dataset
 from si.statistics.euclidean_distance import euclidean_distance
-from si.metrics.rmse import rmse
+from si.metrics.mse import rmsee
 import numpy as np
 import pandas as pd
 from si.model_selection.split import train_test_split
+from si.io.csv_file import read_csv
+
 
 
 class KNNRegressor:
@@ -72,7 +74,7 @@ class KNNRegressor:
         """
         all_distances = self.distance (sample, self.dataset.X) #Calcular a distância entre cada amostra e várias amostras no conjunto de treinamento:
         KNN = np.argsort(all_distances)[:self.k]  # O argsort ordena o array inicial por ordem crescente, através do indice. Ex. Array original: [3 1 4 1 5 9 2 6 5 3 5], Índices ordenados: [ 1  3  6  0  9  4  8 10  2  7  5]. Assim podemos obter a distância mais pequena, que fica no inicio.
-        KNN_label = self.dataset.Y[KNN]     #Label da amostra de cima
+        KNN_label = self.dataset.y[KNN]     #Label da amostra de cima
         unique_labels, label_counts = np.unique(KNN_label, return_counts=True)   # O np.unique é usada para obter os rotulos das classes sem haver duplicações e diz-nos as contagens para cada classe se for preciso usar. EX: A classe 2 têm dois rotulos, entao tenho duas amostras ([0,1,1,1,2,2])
         closest_label = np.average(KNN_label) # Em problemas de regressão, os rótulos representam valores numéricos. Como tal, obtemos a média das labels dos k vizinhos 
                               # O valor numérico previsto está associado a uma nova amostra (característica) e é determinado com base nos valores das k amostras mais próximas.
@@ -112,22 +114,37 @@ class KNNRegressor:
         return rmse(dataset.y, predictions) # compara os previstos com os valores reais
     
 if __name__ == '__main__':
+
+    # Caminho para o arquivo CSV
     path = "C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/cpu/cpu.csv"
-    dataset = pd.read_csv(path)
+    
+    # Ler o conjunto de dados a partir do arquivo CSV
+    df = pd.read_csv(path)
 
-    # Supondo que "syct" seja a coluna de rótulo
-    dataset_ = Dataset.from_dataframe(dataset, label='syct')
+    #dataset_ = Dataset.from_dataframe(df, label='perf') #porquê que não dá para fazer logo assim?
 
-    # Dividindo o conjunto de dados
-    dataset_train, dataset_test = train_test_split(dataset_, test_size=0.30)
+    # Assumindo que "perf" é a coluna que se pretende prever
+    label_column = 'perf'
+    
+    # Obter as colunas de características (features)
+    features_columns = df.columns[df.columns != label_column]
 
-    # criando um modelo de regressão KNN com k = 4
-    knn = KNNRegressor(k=4)
+    # Criar um objeto Dataset
+    dataset_ = Dataset(X=df[features_columns].to_numpy(), y=df[label_column].to_numpy())
 
-    # Treinando o modelo
+    # Dividir o conjunto de dados em treino e teste
+    dataset_train, dataset_test = train_test_split(dataset_, test_size=0.25)
+
+    # Criar um modelo de regressão k-NN (K-Nearest Neighbors)
+    knn = KNNRegressor(k=5)
+
+    # Treinar o modelo
     knn.fit(dataset_train)
 
-    # Calculando e imprimindo o escore RMSE
+    # Calcular e imprimir o RMSE score
     score = knn.score(dataset_test)
-    print(f'O RMSE do modelo é: {score}')
- 
+    print(f'The RMSE of the model is: {score}')
+
+
+
+
