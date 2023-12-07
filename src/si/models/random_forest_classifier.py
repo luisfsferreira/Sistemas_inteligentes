@@ -135,5 +135,19 @@ class RandomForestClassifier:
 
         return accuracy(dataset.y, predictions)
 
+if __name__ == "main":
+    from si.io.csv_file import read_csv
+    from si.model_selection.split import train_test_split
 
+    path= "C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/iris/iris.csv"
+    dataset =  read_csv(path, features=True, label=True)
 
+    X_train, X_test, y_train, y_test = train_test_split(dataset, test_size=0.33, random_state=42)
+
+    model = RandomForestClassifier(n_estimators = 500, max_features = None, min_sample_split= 2,  max_depth = 10, seed = 42, mode = "gini" )
+
+    model.fit(X_train, y_train)
+
+    print(model.score(X_test, y_test))
+
+    
