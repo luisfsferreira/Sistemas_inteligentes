@@ -4,7 +4,7 @@ from typing import Callable, Tuple, Dict, Any
 import numpy as np
 
 from si.data.dataset import Dataset
-from si.model_selection.cross_validation import k_fold_cross_validation
+from si.model_selection.cross_validate import k_fold_cross_validation
 
 
 def grid_search_cv(model,

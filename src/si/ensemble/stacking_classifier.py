@@ -111,3 +111,33 @@ class StackingClassifier:
         score = accuracy(dataset.y, y_pred)      # Comparamos os rotulos reais, com os rotulos que foram previstos.
 
         return score
+    
+if __name__ == "__main__":
+    
+    from si.io.csv_file import read_csv
+    from si.model_selection.split import train_test_split
+    from si.models.knn_classifier import KNNClassifier
+    from si.models.logistic_regression import LogisticRegression
+    from si.models.decision_tree_classifier import DecisionTreeClassifier
+    
+    path = "C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/breast-bin/breast-bin.csv"
+    dataset = read_csv(path, sep= ',', label= True,  features = True)
+
+    train, test = train_test_split(dataset, test_size= 0.3, random_state= 42)
+
+    model_knn = KNNClassifier(k= 2)
+    model_logistic = LogisticRegression (l2_penalty=1, alpha=0.001, max_iter=1000)
+    model_decisiontree = DecisionTreeClassifier( min_sample_split=3, max_depth=3, mode='gini')
+
+    model_knn_final = KNNClassifier(k=2)
+    models = [model_knn, model_logistic, model_decisiontree]
+
+    compare = StackingClassifier(models, model_knn)
+
+    train.fit(compare)
+
+    print(compare.score(test))
+ 
+
+
+

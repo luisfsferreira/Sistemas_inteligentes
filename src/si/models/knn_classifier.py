@@ -7,6 +7,7 @@ from si.metrics.accuracy import accuracy
 from si.statistics.euclidean_distance import euclidean_distance
 
 
+
 class KNNClassifier:
     """
     KNN Classifier
