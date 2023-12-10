@@ -37,7 +37,7 @@ class RidgeRegressionLeastSquares:
         self.mean = None
         self.std = None
 
-    def fit (self, dataset: Dataset) -> "RidgeRegressionLeastSquates":
+    def fit (self, dataset: Dataset) -> "RidgeRegressionLeastSquares":
         """
         Trains the Ridge Regression model using Least Squares.
 
