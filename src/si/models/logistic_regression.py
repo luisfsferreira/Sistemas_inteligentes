@@ -52,7 +52,7 @@ class LogisticRegression:
         self.scale = scale
 
         # attributes
-        self.theta = None
+        self.theta = np.array([]) 
         self.theta_zero = None
         self.mean = None
         self.std = None
@@ -84,8 +84,9 @@ class LogisticRegression:
         m, n = dataset.shape()
 
         # initialize the model parameters
-        
-        
+        self.theta = np.zeros(n)
+        self.theta_zero = 0
+
         i = 0
         early_stopping = 0
         # gradient descent

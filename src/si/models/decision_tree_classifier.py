@@ -298,5 +298,5 @@ if __name__ == '__main__':
     model = DecisionTreeClassifier(min_sample_split=3, max_depth=3, mode='gini')
     model.fit(train)
     model.print_tree()
-    print(model.score(test))
+    print("Model score: ", model.score(test))
 

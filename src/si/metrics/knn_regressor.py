@@ -1,7 +1,8 @@
 from typing import Callable, Union
 from si.data.dataset import Dataset
 from si.statistics.euclidean_distance import euclidean_distance
-from si.metrics.mse import rmsee
+from si.metrics.mse import mse
+from si.metrics.rmse import rmse
 import numpy as np
 import pandas as pd
 from si.model_selection.split import train_test_split

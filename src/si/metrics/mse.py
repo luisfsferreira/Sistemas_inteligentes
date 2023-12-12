@@ -1,35 +1,39 @@
 import numpy as np
 
-def rmsee (y_true: int, Y_pred: int) -> float:
+
+def mse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """
-    Calculate the Root Mean Squared Error (RMSE) between real values and predicted values.
+    It returns the mean squared error of the model on the given dataset
 
     Parameters
     ----------
-    y_true : int
-        Real values.
-    y_pred : int
-        Predicted values.
+    y_true: np.ndarray
+        The true labels of the dataset
+    y_pred: np.ndarray
+        The predicted labels of the dataset
 
     Returns
     -------
-    float
-        Value corresponding to the RMSE between y_true and y_pred.
+    mse: float
+        The mean squared error of the model
     """
-    return np.sqrt(np.sum((y_true-Y_pred)**2) / len(y_true))
+    return np.sum((y_true - y_pred) ** 2) / (len(y_true) * 2)
 
-# if __name__ == '__main__':
-#     # Exemplo: 
 
-#     y_true = np.array([1, 2, 3])
-#     y_pred = np.array([2, 2, 4])
+def mse_derivative(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
+    """
+    It returns the derivative of the mean squared error for the y_pred variable.
 
-#     # Calcular as diferenças ao quadrado
-#     diferencas_ao_quadrado = (y_true - y_pred)**2  # Resultado: array([1, 0, 1])
+    Parameters
+    ----------
+    y_true: np.ndarray
+        The true labels of the dataset
+    y_pred: np.ndarray
+        The predicted labels of the dataset
 
-#     print(diferencas_ao_quadrado)
-
-#     # Soma das diferenças ao quadrado
-#     soma_diferencas_ao_quadrado = np.sum(diferencas_ao_quadrado)
-
-#     print(soma_diferencas_ao_quadrado)
+    Returns
+    -------
+    mse_derivative: np.ndarray
+        The derivative of the mean squared error
+    """
+    return -2 * (y_true - y_pred) / (len(y_true) * 2)

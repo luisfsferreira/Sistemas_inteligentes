@@ -1,6 +1,6 @@
 import numpy as np
 
-def rmsee (y_true: int, Y_pred: int) -> float:
+def rmse (y_true: int, Y_pred: int) -> float:
     """
     Calculate the Root Mean Squared Error (RMSE) between real values and predicted values.
 
