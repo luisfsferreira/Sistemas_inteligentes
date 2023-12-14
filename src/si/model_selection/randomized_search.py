@@ -48,6 +48,7 @@ def  randomized_search_cv (model, dataset:Dataset, hyperparameter_grid: Dict[str
         scores_list.append(mean_score)
 
         # Check if the current combination is the best so far
+        best_score = 0
         if mean_score > best_score:
             best_score = mean_score
             best_hyperparameters = current_hyperparameters.copy()  #Dicicionário em que ficam guardados os valores de hiperparâmetros que levaram à melhor pontuação obtida durante a procura aleatória.

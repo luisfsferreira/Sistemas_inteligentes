@@ -1,8 +1,5 @@
 import numpy as np
 from si.data.dataset import Dataset 
-from si.io.csv_file import read_csv
-from sklearn import preprocessing
-import pandas as pd
 
 class PCA:
     def __init__(self, n_components: int) :

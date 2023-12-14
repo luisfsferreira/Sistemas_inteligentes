@@ -1,6 +1,8 @@
 from si.data.dataset import Dataset
 import numpy as np
 from si.metrics.accuracy import accuracy
+from si.statistics.euclidean_distance import euclidean_distance
+from si.statistics.manhattan_distance import manhattan_distance
 
 class StackingClassifier:
     """
@@ -25,7 +27,9 @@ class StackingClassifier:
         self.models = models
         self.final_model = final_model
 
-    def fit (self, dataset: Dataset) -> "StackingClassifier":
+        self.distance = manhattan_distance
+
+    def fit(self, dataset: Dataset) -> "StackingClassifier":
         """
         Fit the models to the dataset.
 
@@ -83,14 +87,17 @@ class StackingClassifier:
         final_pred : np.ndarray
             Array of final predictions made by the ensemble.
         """
-        predictions_2 = []
-        for model in self.models:
-            predictions_2.append(model.predict(dataset))
-        
-        # gets the final model previsions
-        final_pred = self.final_model.predict(Dataset(dataset.X, np.array(predictions_2).T))  # forneco ao modelo final as características originais e as previsões dos modelos base. Aqui o predict faz previsões em um conjunto de dados de entrada (dataset.X) com base no modelo treinado.
-         
-        return final_pred                                                                     
+
+        predictions = []
+        for sample in dataset.X:
+            distances = self.distance(sample, dataset.X)
+            # Selecionar a classe com base na menor distância
+            closest_index = np.argmin(distances)
+            closest_label = dataset.y[closest_index]
+            predictions.append(closest_label)
+
+        return np.array(predictions)
+
     
     def score (self, dataset: Dataset) -> float:
         """
@@ -127,16 +134,16 @@ if __name__ == "__main__":
 
     model_knn = KNNClassifier(k= 2)
     model_logistic = LogisticRegression (l2_penalty=1, alpha=0.001, max_iter=1000)
-    model_decisiontree = DecisionTreeClassifier( min_sample_split=3, max_depth=3, mode='gini')
+    model_decision_tree = DecisionTreeClassifier( min_sample_split=3, max_depth=3, mode='gini')
 
     model_knn_final = KNNClassifier(k=2)
-    models = [model_knn, model_logistic, model_decisiontree]
+    models = [model_knn, model_logistic, model_decision_tree]
 
     compare = StackingClassifier(models, model_knn)
 
-    train.fit(compare)
+    compare.fit(train)
 
-    print(compare.score(test))
+    print(compare.score(test)) # Usasse as previsões dos modelos base como características para o modelo final. O valor de 1 significa que todas as previsões do modelo foram corretas no conjunto de teste
  
 
 

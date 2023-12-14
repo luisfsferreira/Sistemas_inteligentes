@@ -4,6 +4,8 @@ from si.data.dataset import Dataset
 from si.metrics.mse import mse
 
 
+
+
 class RidgeRegression:
     """
     The RidgeRegression is a linear model using the L2 regularization.
@@ -137,9 +139,6 @@ class RidgeRegression:
 
 
 if __name__ == '__main__':
-    # import dataset
-    from si.data.dataset import Dataset
-
     # make a linear dataset
     X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
     y = np.dot(X, np.array([1, 2])) + 3
@@ -163,3 +162,4 @@ if __name__ == '__main__':
     # predict
     y_pred_ = model.predict(Dataset(X=np.array([[3, 5]])))
     print(f"Predictions: {y_pred_}")
+ 

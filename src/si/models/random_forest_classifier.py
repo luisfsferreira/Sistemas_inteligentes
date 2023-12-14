@@ -3,6 +3,8 @@ from si.data.dataset import Dataset
 from typing import Literal
 from decision_tree_classifier import DecisionTreeClassifier
 from si.metrics.accuracy import accuracy
+from si.io.csv_file import read_csv
+from si.model_selection.split import stratified_train_test_split
 
 
 class RandomForestClassifier:
@@ -63,8 +65,7 @@ class RandomForestClassifier:
 
         np.random.seed(self.seed)
     
-        n_features = dataset.shape[1]
-        n_samples = dataset.shape[0]
+        n_samples, n_features = dataset.shape()
 
         if self.max_features is None:
             self.max_features = int(np.sqrt(n_features))
@@ -74,20 +75,21 @@ class RandomForestClassifier:
         for x in range (self.n_estimators):
 
             index = np.random.choice(n_samples, size = n_samples, replace = True)
-            self.max_features = np.random.choice(n_features, size = n_features)
+            features_used = np.random.choice(n_features, size = self.max_features, replace = False)
    
-            bootstrap_X = dataset.X[index] [:, self.max_features]  # quero apenas as linhas presentes em index e a outra condição é, quero todas as linhas presentes na étapa anterior mas só as colunas em self.max_features
+            bootstrap_X = dataset.X[index, :] [:, features_used]  # quero apenas as linhas presentes em index e a outra condição é, quero todas as linhas presentes na étapa anterior mas só as colunas em self.max_features
             bootstrap_y = dataset.y[index]  # seleciona a classe para cada linha (amostra)
             
-            random_dataset = Dataset (dataset.X[bootstrap_X], dataset.y[bootstrap_y])
+            random_dataset = Dataset(bootstrap_X, bootstrap_y)
 
             tree = DecisionTreeClassifier(min_sample_split = self.min_samples_split, max_depth = self.max_depth, mode =self.mode )
 
             tree.fit(random_dataset)
 
-            self.tree.append(bootstrap_y,tree)
+            self.trees.append((features_used, tree))
 
-            return self
+        return self        
+
     
     def predict (self, dataset:Dataset)-> np.ndarray:
         """
@@ -103,16 +105,20 @@ class RandomForestClassifier:
         predictions: np.ndarray
             Array of predicted class labels.
         """
-        
-        predictions = []
+
+        tree_pred_list = []
+
         for features, tree in self.trees:
-            X_subset = dataset.X[:, features]   # Obtenho todas as linhas mas apenas as colunas (features) presente na tree.
-            tree_pred = tree.predict(X_subset)  # Vou usar a tree com os dados treinados para prever os dados do meu dataset.
-            predictions.append((features, tree_pred))       # Adiciono o resultado à lista vazia
+            X_subset = dataset.X[:, features]    # Obtenho todas as linhas mas apenas as colunas (features) presente na tree.
+            tree_pred = tree.predict(Dataset(X=X_subset)) # Vou usar a tree com os dados treinados para prever os dados do meu dataset.
+            
+            tree_pred_list.append(tree_pred)   # Adiciono o resultado à lista vazia
 
-        predictions = np.array(predictions)
+        tree_pred_array = np.array(tree_pred_list)
 
-        features, counts = np.unique(predictions[:,1], return_counts=True)  # [:, 1] diz que queremos todas as entrada da segunda coluna, que contém as previsões da árvore
+        # Now, you can use features_array and tree_pred_array as needed.
+
+        features, counts = np.unique(tree_pred_array, return_counts=True)
 
         return features[np.argmax(counts)]        
     
@@ -135,19 +141,18 @@ class RandomForestClassifier:
 
         return accuracy(dataset.y, predictions)
 
-if __name__ == "main":
-    from si.io.csv_file import read_csv
-    from si.model_selection.split import train_test_split
-
+if __name__ == "__main__":
     path= "C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/iris/iris.csv"
     dataset =  read_csv(path, features=True, label=True)
 
-    X_train, X_test, y_train, y_test = train_test_split(dataset, test_size=0.33, random_state=42)
+    dataset_train, dataset_test = stratified_train_test_split(dataset, test_size=0.33, random_state=42)
+
+    # X_train, y_train = dataset_train.X, dataset_train.y
+    # X_test, y_test = dataset_test.X, dataset_test.y
 
     model = RandomForestClassifier(n_estimators = 500, max_features = None, min_sample_split= 2,  max_depth = 10, seed = 42, mode = "gini" )
 
-    model.fit(X_train, y_train)
+    model.fit(dataset_train)
 
-    print(model.score(X_test, y_test))
+    print("Model score:", model.score(dataset_test))
 
-    

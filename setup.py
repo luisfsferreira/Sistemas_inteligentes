@@ -8,7 +8,7 @@ setup(
     packages=find_packages('src'),
     zip_safe=False,
     install_requires=['numpy', 'pandas', 'scipy'],
-    author='',
+    author='Luís Ferreira',
     author_email='',
     description='Sistemas inteligentes',
     license='Apache License Version 2.0',

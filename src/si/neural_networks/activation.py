@@ -179,7 +179,7 @@ class ReLUActivation(ActivationLayer):
         """
         return np.where(input > 0, 1, 0)
     
-class TanhActivation:
+class TanhActivation(ActivationLayer):
     """
     TanhActivation class represents the hyperbolic tangent activation function in neural networks.
     """
@@ -216,7 +216,7 @@ class TanhActivation:
         """
         return 1 - self.activation_function(input)**2
 
-class SoftmaxActivation:
+class SoftmaxActivation(ActivationLayer):
     """
     SoftmaxActivation class represents the softmax activation function in neural networks.
     """

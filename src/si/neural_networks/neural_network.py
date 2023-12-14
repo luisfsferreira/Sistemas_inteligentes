@@ -6,8 +6,10 @@ from si.data.dataset import Dataset
 from si.neural_networks.layers import Layer
 from si.neural_networks.losses import LossFunction, MeanSquaredError, BinaryCrossEntropy
 from si.neural_networks.optimizers import Optimizer, SGD
+from si.neural_networks.activation import TanhActivation, SoftmaxActivation, ReLUActivation, SigmoidActivation
 from si.metrics.mse import mse
-
+from si.metrics.accuracy import accuracy
+from si.neural_networks.layers import Layer, DenseLayer, Dropout
 
 class NeuralNetwork:
     """
@@ -19,7 +21,6 @@ class NeuralNetwork:
                  metric: callable = mse, **kwargs):
         """
         Initialize the neural network.
-
         Parameters
         ----------
         epochs: int
@@ -54,12 +55,10 @@ class NeuralNetwork:
     def add(self, layer: Layer) -> 'NeuralNetwork':
         """
         Add a layer to the neural network.
-
         Parameters
         ----------
         layer: Layer
             The layer to add.
-
         Returns
         -------
         NeuralNetwork
@@ -76,7 +75,6 @@ class NeuralNetwork:
                           shuffle: bool = True) -> Iterator[Tuple[np.ndarray, np.ndarray]]:
         """
         Generate mini-batches for the given data.
-
         Parameters
         ----------
         X: numpy.ndarray
@@ -85,7 +83,6 @@ class NeuralNetwork:
             The label vector.
         shuffle: bool
             Whether to shuffle the data or not.
-
         Returns
         -------
         Iterator[Tuple[numpy.ndarray, numpy.ndarray]]
@@ -105,14 +102,12 @@ class NeuralNetwork:
     def _forward_propagation(self, X: np.ndarray, training: bool) -> np.ndarray:
         """
         Perform forward propagation on the given input.
-
         Parameters
         ----------
         X: numpy.ndarray
             The input to the layer.
         training: bool
             Whether the layer is in training mode or in inference mode.
-
         Returns
         -------
         numpy.ndarray
@@ -126,12 +121,10 @@ class NeuralNetwork:
     def _backward_propagation(self, output_error: float) -> float:
         """
         Perform backward propagation on the given output error.
-
         Parameters
         ----------
         output_error: float
             The output error of the layer.
-
         Returns
         -------
         float
@@ -187,12 +180,10 @@ class NeuralNetwork:
     def predict(self, dataset: Dataset) -> np.ndarray:
         """
         Predict the labels for the given dataset.
-
         Parameters
         ----------
         dataset: Dataset
             The dataset to predict.
-
         Returns
         -------
         numpy.ndarray
@@ -203,12 +194,10 @@ class NeuralNetwork:
     def score(self, dataset: Dataset) -> float:
         """
         Compute the score of the neural network on the given dataset.
-
         Parameters
         ----------
         dataset: Dataset
             The dataset to score.
-
         Returns
         -------
         float
@@ -219,51 +208,51 @@ class NeuralNetwork:
         else:
             raise ValueError("No metric specified for the neural network.")
 
-
 if __name__ == '__main__':
     from si.data.dataset import Dataset
     from si.neural_networks.layers import Layer, DenseLayer, Dropout
-    from si.neural_networks.activation import TanhActivation, SoftmaxActivation, ReLUActivation, SigmoidActivation
+    from si.neural_networks.activation import TanhActivation, SoftmaxActivation
     from si.neural_networks.losses import MeanSquaredError, CategoricalCrossEntropy
     from si.metrics.mse import mse
     from si.metrics.accuracy import accuracy
     from si.io.csv_file import read_csv
 
-    # training data
-    dataset = read_csv('../../../datasets/iris/iris.csv', sep=',', features=True, label=True)
-    # convert labels to one-hot encoding
-    new_y = np.zeros((dataset.y.shape[0], 3))
-    for i, label in enumerate(dataset.y):
-        if label == 'Iris-setosa':
-            new_y[i] = [1, 0, 0]
-        elif label == 'Iris-versicolor':
-            new_y[i] = [0, 1, 0]
-        else:
-            new_y[i] = [0, 0, 1]
-    dataset.y = new_y
+    # # training data
+    # dataset = read_csv('C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/iris/iris.csv', sep=',', features=True, label=True)
+    # # convert labels to one-hot encoding
+    # new_y = np.zeros((dataset.y.shape[0], 3))
+    # for i, label in enumerate(dataset.y):
+    #     if label == 'Iris-setosa':
+    #         new_y[i] = [1, 0, 0]
+    #     elif label == 'Iris-versicolor':
+    #         new_y[i] = [0, 1, 0]
+    #     else:
+    #         new_y[i] = [0, 0, 1]
+    # dataset.y = new_y
 
-    # network
-    net = NeuralNetwork(epochs=1000, batch_size=16, optimizer=SGD, learning_rate=0.01, verbose=True,
-                        loss=CategoricalCrossEntropy, metric=accuracy)
-    n_features = dataset.X.shape[1]
-    net.add(DenseLayer(6, (n_features,)))
-    net.add(TanhActivation())
-    net.add(Dropout(0.25))
-    net.add(DenseLayer(4))
-    net.add(TanhActivation())
-    net.add(DenseLayer(3))
-    net.add(SoftmaxActivation())
+    # # network
+    # net = NeuralNetwork(epochs=1000, batch_size=16, optimizer=SGD, learning_rate=0.01, verbose=True,
+    #                     loss=CategoricalCrossEntropy, metric=accuracy)
+    # n_features = dataset.X.shape[1]
+    # net.add(DenseLayer(6, (n_features,)))
+    # net.add(TanhActivation())
+    # net.add(Dropout(0.25))
+    # net.add(DenseLayer(4))
+    # net.add(TanhActivation())
+    # net.add(DenseLayer(3))
+    # net.add(SoftmaxActivation())
 
-    # train
-    net.fit(dataset)
+    # # train
+    # net.fit(dataset)
 
-    # test
-    out = net.predict(dataset)
-    print(out[:3])
-    out2 = net.predict(dataset)
-    print(out2[:3])
+    # # test
+    # out = net.predict(dataset)
+    # print(out[:3])
+    # out2 = net.predict(dataset)
+    # print(out2[:3])
 
-    print(net.score(dataset))
+    # print(net.score(dataset))
+
 
     #Network exercice 16
 
