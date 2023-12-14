@@ -217,41 +217,41 @@ if __name__ == '__main__':
     from si.metrics.accuracy import accuracy
     from si.io.csv_file import read_csv
 
-    # # training data
-    # dataset = read_csv('C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/iris/iris.csv', sep=',', features=True, label=True)
-    # # convert labels to one-hot encoding
-    # new_y = np.zeros((dataset.y.shape[0], 3))
-    # for i, label in enumerate(dataset.y):
-    #     if label == 'Iris-setosa':
-    #         new_y[i] = [1, 0, 0]
-    #     elif label == 'Iris-versicolor':
-    #         new_y[i] = [0, 1, 0]
-    #     else:
-    #         new_y[i] = [0, 0, 1]
-    # dataset.y = new_y
+    # training data
+    dataset = read_csv('C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/iris/iris.csv', sep=',', features=True, label=True)
+    # convert labels to one-hot encoding
+    new_y = np.zeros((dataset.y.shape[0], 3))
+    for i, label in enumerate(dataset.y):
+        if label == 'Iris-setosa':
+            new_y[i] = [1, 0, 0]
+        elif label == 'Iris-versicolor':
+            new_y[i] = [0, 1, 0]
+        else:
+            new_y[i] = [0, 0, 1]
+    dataset.y = new_y
 
-    # # network
-    # net = NeuralNetwork(epochs=1000, batch_size=16, optimizer=SGD, learning_rate=0.01, verbose=True,
-    #                     loss=CategoricalCrossEntropy, metric=accuracy)
-    # n_features = dataset.X.shape[1]
-    # net.add(DenseLayer(6, (n_features,)))
-    # net.add(TanhActivation())
-    # net.add(Dropout(0.25))
-    # net.add(DenseLayer(4))
-    # net.add(TanhActivation())
-    # net.add(DenseLayer(3))
-    # net.add(SoftmaxActivation())
+    # network
+    net = NeuralNetwork(epochs=1000, batch_size=16, optimizer=SGD, learning_rate=0.01, verbose=True,
+                        loss=CategoricalCrossEntropy, metric=accuracy)
+    n_features = dataset.X.shape[1]
+    net.add(DenseLayer(6, (n_features,)))
+    net.add(TanhActivation())
+    net.add(Dropout(0.25))
+    net.add(DenseLayer(4))
+    net.add(TanhActivation())
+    net.add(DenseLayer(3))
+    net.add(SoftmaxActivation())
 
-    # # train
-    # net.fit(dataset)
+    # train
+    net.fit(dataset)
 
-    # # test
-    # out = net.predict(dataset)
-    # print(out[:3])
-    # out2 = net.predict(dataset)
-    # print(out2[:3])
+    # test
+    out = net.predict(dataset)
+    print(out[:3])
+    out2 = net.predict(dataset)
+    print(out2[:3])
 
-    # print(net.score(dataset))
+    print(net.score(dataset))
 
 
     #Network exercice 16
@@ -286,3 +286,30 @@ if __name__ == '__main__':
     test_dataset = Dataset(X_test, y_test)
     test_accuracy = net.score(test_dataset)
     print(f"Test Accuracy: {test_accuracy}")
+
+    import matplotlib.pyplot as plt
+
+    # Extrai as informações do histórico
+    epochs = list(net.history.keys())
+    loss_values = [history['loss'] for history in net.history.values()]
+    accuracy_values = [history['metric'] for history in net.history.values()]
+
+    # Cria o gráfico de perda
+    plt.figure(figsize=(12, 4))
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs, loss_values, label='Training Loss', marker='o')
+    plt.title('Training Loss Over Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    # Cria o gráfico de precisão
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, accuracy_values, label='Training Accuracy', marker='o', color='orange')
+    plt.title('Training Accuracy Over Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
