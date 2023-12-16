@@ -105,6 +105,7 @@ class DenseLayer(Layer):
     def __init__(self, n_units: int, input_shape: tuple = None):
         """
         Initialize the dense layer.
+
         Parameters
         ----------
         n_units: int
@@ -133,6 +134,7 @@ class DenseLayer(Layer):
     def parameters(self) -> int:
         """
         Returns the number of parameters of the layer.
+
         Returns
         -------
         int
@@ -143,12 +145,14 @@ class DenseLayer(Layer):
     def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
         """
         Perform forward propagation on the given input.
+
         Parameters
         ----------
         input: numpy.ndarray
             The input to the layer.
         training: bool
             Whether the layer is in training mode or in inference mode.
+
         Returns
         -------
         numpy.ndarray
@@ -163,10 +167,12 @@ class DenseLayer(Layer):
         Perform backward propagation on the given output error.
         Computes the dE/dW, dE/dB for a given output_error=dE/dY.
         Returns input_error=dE/dX to feed the previous layer.
+
         Parameters
         ----------
         output_error: numpy.ndarray
             The output error of the layer.
+
         Returns
         -------
         float
@@ -188,6 +194,7 @@ class DenseLayer(Layer):
     def output_shape(self) -> tuple:
         """
         Returns the shape of the output of the layer.
+
         Returns
         -------
         tuple
