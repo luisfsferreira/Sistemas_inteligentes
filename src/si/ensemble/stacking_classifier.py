@@ -24,10 +24,12 @@ class StackingClassifier:
     """    
  
     def __init__(self, models: list, final_model):
+        """
+        Initializes the StackingClassifier.
+        """
         self.models = models
         self.final_model = final_model
 
-        self.distance = manhattan_distance
 
     def fit(self, dataset: Dataset) -> "StackingClassifier":
         """
@@ -89,14 +91,13 @@ class StackingClassifier:
         """
 
         predictions = []
-        for sample in dataset.X:
-            distances = self.distance(sample, dataset.X)
-            # Selecionar a classe com base na menor distância
-            closest_index = np.argmin(distances)
-            closest_label = dataset.y[closest_index]
-            predictions.append(closest_label)
+        for model in self.models:
+            predictions.append(model.predict(dataset))
 
-        return np.array(predictions)
+        # gets the final model prediction
+        y_pred = self.final_model.predict(Dataset(np.array(predictions).T, dataset.y))
+
+        return y_pred
 
     
     def score (self, dataset: Dataset) -> float:
@@ -122,7 +123,7 @@ class StackingClassifier:
 if __name__ == "__main__":
     
     from si.io.csv_file import read_csv
-    from si.model_selection.split import train_test_split
+    from si.model_selection.split import stratified_train_test_split
     from si.models.knn_classifier import KNNClassifier
     from si.models.logistic_regression import LogisticRegression
     from si.models.decision_tree_classifier import DecisionTreeClassifier
@@ -130,21 +131,23 @@ if __name__ == "__main__":
     path = "C:/Users/luis-/Documents/GitHub/Sistemas_inteligentes/datasets/breast-bin/breast-bin.csv"
     dataset = read_csv(path, sep= ',', label= True,  features = True)
 
-    train, test = train_test_split(dataset, test_size= 0.3, random_state= 42)
+    train, test = stratified_train_test_split(dataset, test_size= 0.3, random_state= 42)
 
-    model_knn = KNNClassifier(k= 2)
+    model_knn = KNNClassifier(k= 3)
     model_logistic = LogisticRegression (l2_penalty=1, alpha=0.001, max_iter=1000)
     model_decision_tree = DecisionTreeClassifier( min_sample_split=3, max_depth=3, mode='gini')
 
     model_knn_final = KNNClassifier(k=2)
     models = [model_knn, model_logistic, model_decision_tree]
 
-    compare = StackingClassifier(models, model_knn)
+    compare = StackingClassifier(models, model_knn_final)
 
     compare.fit(train)
 
     print(compare.score(test)) # Usasse as previsões dos modelos base como características para o modelo final. O valor de 1 significa que todas as previsões do modelo foram corretas no conjunto de teste
  
+
+
 
 
 

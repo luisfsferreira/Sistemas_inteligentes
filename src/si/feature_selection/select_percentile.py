@@ -76,7 +76,7 @@ class SelectPercentile:
         if self.F is None:
             raise ValueError("Model not fitted")
         k = int(len(dataset.features) * self.percentile) # Calcula o número de características a serem mantidas. Total de carateristicas * percentagem que queremos das carateristicas.
-        ic(k)
+        # ic(k)
         if k == 0: k = 1  # se o k for igual a 0, vai selecionar todas as features e não é suposto
         sorted_indices = np.argsort(self.F)   #ordena os elementos do array por ordem crescente mas retorna o indice, ao em vez do elemento. X = [3 2 1 4], np.argsort(X) = [2,1,0,3], lembrando que o index começa em 0. 
         idxs = sorted_indices[-k:]  #Vamos obter os ultimos scores da lista, que vao ser considerados os scores mais altos para o k considerado.
@@ -108,5 +108,6 @@ if __name__ == '__main__':
 
         selector = SelectPercentile(f_classification, percentile= 0.25)
         selector = selector.fit(dataset)
+        # print(selector)
         dataset = selector.transform(dataset)
-        print(dataset.features)
+        # print(dataset.features)
