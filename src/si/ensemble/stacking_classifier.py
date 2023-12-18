@@ -140,7 +140,7 @@ if __name__ == "__main__":
     model_knn_final = KNNClassifier(k=2)
     models = [model_knn, model_logistic, model_decision_tree]
 
-    compare = StackingClassifier(models, model_knn_final)
+    compare = StackingClassifier(models, model_knn_final) #O modelo final (neste caso, outro KNN) é treinado com a matriz de características e os rótulos verdadeiros do conjunto de treino.
 
     compare.fit(train)
 
