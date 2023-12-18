@@ -120,7 +120,7 @@ class RandomForestClassifier:
 
         features, counts = np.unique(tree_pred_array, return_counts=True)
 
-        return features[np.argmax(counts)]        
+        return features[np.argmax(counts)]     #Obtemos a feature que aparece mais vezes na lista de previsões.    
     
     def score (self, dataset: Dataset) -> float:
         """

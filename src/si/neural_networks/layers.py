@@ -245,7 +245,7 @@ class Dropout(Layer):
                 The output of the layer after applying Dropout.
             """
             if training:
-                scale = 1/(1-self.probability)
+                scale = 1/(1-self.probability)    #ajuda a estabilizar e garante que a média global da saída não é afetada negativamente pela desativação aleatória de neurônios.
                 self.mask = np.random.binomial(1, 1 - self.probability, size=input.shape)  # matriz binária que pode conter valores de 0 ou 1 (neuronio desativo e ativo, respetivamente)
                 self.input = input
                 self.output = self.input * self.mask * scale                                   # esta matriz tem valores positivos, negativos e nulos. Nulos representa o neuronio desativado, positivo significa que o neuronio contribuiu positivamente para a saída e negativo significa que contribui negativamente.
@@ -269,7 +269,7 @@ class Dropout(Layer):
             np.ndarray
                 The input error of the layer.
             """
-            return self.mask * output_error  #Cada valor da matriz representa se o erro está sendo propagado de volta para a camada anterior após a aplicação do dropout
+            return self.mask * output_error  #Cada valor da matriz representa se o erro está sendo propagado de volta para a camada anterior após a aplicação do dropout. Se o gradiente for 0, desativa a propagação desse gradiente para camadas anteriores, se for diferente de 0, o neuronio mantem-se ativo.
 
         
     def output_shape(self) -> tuple:

@@ -235,7 +235,7 @@ class SoftmaxActivation(ActivationLayer):
         np.ndarray
             The output array after applying the softmax activation function.
         """
-        exp_values = np.exp(input - np.max(input, axis=-1, keepdims=True))  # Subtraimos o valor máximo calculado de cada elemento do array de entrada. Isso é feito para evitar grandes valores exponenciais. keepdims = Aqui mantém as dimensões do resultado, para que possa ser usado diretamente na operação seguinte. Se o array for bidimensional, o último eixo (axis = -1) será a coluna. 
+        exp_values = np.exp(input - np.max(input, axis=-1, keepdims=True))  # Subtraimos o valor máximo do input a cada elemento do array de entrada (input). Isso é feito para evitar grandes valores exponenciais. keepdims = Aqui mantém as dimensões do resultado, para que possa ser usado diretamente na operação seguinte. Se o array for bidimensional, o axis = -1 indica que a operação é realizada ao longo do último eixo do array, que corresponde às colunas.
         return exp_values / np.sum(exp_values, axis=-1, keepdims=True) # Calcula a soma dos valores exponenciais ao longo do último eixo (novamente, ao longo das colunas)
 
 
